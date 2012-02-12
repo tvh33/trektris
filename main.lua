@@ -4,16 +4,16 @@ function love.load()
 	math.randomseed(os.time())
 	frames = 0
 	mt = {}          -- create the matrix
-    for i=0,17 do
-      mt[i] = {}     -- create a new row
+	for i=0,17 do
+		mt[i] = {}     -- create a new row
       for j=0,11 do
-		if j == 0 or j == 11 or i == 17 then
-			mt[i][j] = 8
-		else
-			mt[i][j] = 0
+			if j == 0 or j == 11 or i == 17 then
+				mt[i][j] = 8
+			else
+				mt[i][j] = 0
+			end
 		end
-      end
-    end
+	end
 	ypos = 0
 	xpos = 128
 	image = love.graphics.newImage( "sprites.png" )
