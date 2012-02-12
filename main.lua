@@ -6,7 +6,7 @@ function love.load()
 	mt = {}          -- create the matrix
 	for i=0,17 do
 		mt[i] = {}     -- create a new row
-      for j=0,11 do
+		for j=0,11 do
 			if j == 0 or j == 11 or i == 17 then
 				mt[i][j] = 8
 			else
