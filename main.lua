@@ -1,38 +1,39 @@
 require "helper"
+require "tetromino"
 
 function love.load()
 	math.randomseed(os.time())
 	frames = 0
-	mt = {}          -- create the matrix
+	board = {}
 	for i=0,17 do
-		mt[i] = {}     -- create a new row
+		board[i] = {}
 		for j=0,11 do
-			if j == 0 or j == 11 or i == 17 then
-				mt[i][j] = 8
-			else
-				mt[i][j] = 0
-			end
+		if j == 0 or j == 11 or i == 17 then
+			board[i][j] = 8
+		else
+			board[i][j] = 0
 		end
 	end
-	ypos = 0
-	xpos = 128
+    end
 	image = love.graphics.newImage( "sprites.png" )
 	image:setFilter("nearest", "nearest")
 	rowcount = 0
-	shapetype = math.random(7)
+	
 	rotation = 1
 	state = 0
 	speed = 35
 	test = 0
 	multiplier = 1.5
+	head = Brik:new({shape = math.random(7), xpos = 128})
+	nextTet = Brik:new({shape = math.random(7), xpos = 400, ypos = 30, rotation = 1, probL = 80, probU= 99, prob = math.random(80, 99) })
 end
 
 function love.update(dt)
 	frames = frames + 1
 	test = test + multiplier*dt
 	if test > 1.0 then
-		if nextStepAllowed(0,32,rotation) == 0 then
-			ypos = ypos + 32
+		if nextStepAllowed(0,32,head:getRotation()) == 0 then
+			head:incrY(32)
 		elseif state == 1 then
 			lockShape()
 			state = 0
@@ -44,11 +45,11 @@ function love.update(dt)
 end
 
 function nextStepAllowed(dx, dy, rot)
-	yy = (ypos+dy)/32
-	xx = (xpos+dx)/32
+	yy = (head:getY()+dy)/32
+	xx = (head:getX()+dx)/32
 	for i=0,4 do
 		for j=0,4 do
-			if helper[shapetype][rot][j+1][i+1] ~= 0  and mt[yy+j][xx+i] ~= 0 then
+			if helper[head:getShape()][rot][j+1][i+1] ~= 0  and board[yy+j][xx+i] ~= 0 then
 				return 1
 			end
 		end
@@ -58,16 +59,20 @@ end
 
 function love.draw()
 	drawBoard()
-	drawShape()
-	love.graphics.print(rowcount, 450, 50)
+	drawShape(head)
+	drawShape(nextTet, 2)
+	love.graphics.print(string.format("probability: %s%%", nextTet.prob), 420, 150)
+	love.graphics.print(string.format("rows: %s", rowcount), 420, 165)
 end
 
-function drawShape()
+function drawShape(obj, s)
+	scale = s or 4
+	dim = 8*scale
 	for i=0,4 do
 		for j=0,4 do
-			if helper[shapetype][rotation][i+1][j+1] ~= 0  then
-				colorq = love.graphics.newQuad((shapetype-1)*8, 0, 8, 8, 56, 8)
-				love.graphics.drawq(image, colorq, xpos+(32*j), ypos+(32*i)+32,0,4,4,0,0)
+			if helper[obj:getShape()][obj:getRotation()][i+1][j+1] ~= 0  then
+				colorq = love.graphics.newQuad((obj:getShape()-1)*8, 0, 8, 8, 56, 8)
+				love.graphics.drawq(image, colorq, obj:getX()+(dim*j), obj:getY()+(dim*i)+32,0,scale,scale,0,0)
 			end
 		end
 	end
@@ -77,8 +82,8 @@ function drawBoard()
 	love.graphics.rectangle("line", 32, 32, 320, 544)
 	for i=0,17 do
 		for j=0,11 do
-			if mt[i][j] ~= 8 and mt[i][j] ~= 0 then
-				colorq = love.graphics.newQuad((mt[i][j]-1)*8, 0, 8, 8, 56, 8)
+			if board[i][j] ~= 8 and board[i][j] ~= 0 then
+				colorq = love.graphics.newQuad((board[i][j]-1)*8, 0, 8, 8, 56, 8)
 				love.graphics.drawq(image, colorq, (j*32), (i*32)+32,0,4,4,0,0)
 			end
 		end
@@ -86,27 +91,34 @@ function drawBoard()
 end
 
 function lockShape()
-	xx = xpos/32
-	yy = ypos/32
+	xx = head:getX()/32
+	yy = head:getY()/32
 	for i=0,4 do
 		for j=0,4 do
-			if helper[shapetype][rotation][i+1][j+1] ~= 0 and i+yy <18 and j+xx > 0 and j+xx < 12  then
-				mt[i+yy][j+xx] = shapetype
+			if helper[head:getShape()][head:getRotation()][i+1][j+1] ~= 0 and i+yy <18 and j+xx > 0 and j+xx < 12  then
+				board[i+yy][j+xx] = head:getShape()
 			end
 		end
 	end
 	removeRows()
-	rotation = 1
-	shapetype = math.random(7)
-	ypos = 0
-	xpos = 128
+	head:setRotation(1)
+	tmpp = math.random()
+	if (nextTet.prob / 100) >= tmpp then
+		head:setShape(nextTet:getShape())
+	else
+		head:setShape(math.random(7))
+	end
+	nextTet:setShape(math.random(7))
+	nextTet.prob = math.random(nextTet.probL, nextTet.probU)
+	head:setY(0)
+	head:setX(128)
 end
 
 function removeRows()
 	for i=0,16 do
 		tmp = 0
 		for j=1,10 do
-			if mt[i][j] == 0 then
+			if board[i][j] == 0 then
 				tmp = 1
 				break
 			end
@@ -114,7 +126,7 @@ function removeRows()
 		if tmp == 0 then
 			for p=i,1,-1 do
 				for q=1,10 do
-					mt[p][q] = mt[p-1][q]
+					board[p][q] = board[p-1][q]
 				end
 			end
 			rowcount = rowcount + 1
@@ -124,17 +136,17 @@ end
 
 function love.keypressed(key)
    if key == "left" then
-		if nextStepAllowed(-32,0,rotation) == 0 then
-			xpos = xpos - 32
+		if nextStepAllowed(-32,0,head:getRotation()) == 0 then
+			head:incrX(-32)
 		end
    elseif key == "right" then
-		if nextStepAllowed(32,0,rotation) == 0 then
-			xpos = xpos + 32
+		if nextStepAllowed(32,0,head:getRotation()) == 0 then
+			head:incrX(32)
 		end
    elseif key == "up" then
-		newrotation = (rotation % 4) + 1
+		newrotation = (head:getRotation() % 4) + 1
 		if nextStepAllowed(0,0,newrotation) == 0 then
-			rotation = newrotation
+			head:setRotation(newrotation)
 		end
    elseif key == "down" then
 		multiplier = 50.0
