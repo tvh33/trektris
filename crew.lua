@@ -1,7 +1,7 @@
 crew = love.graphics.newImage("characters.png")
 crew:setFilter("nearest", "nearest")
 
-dialogText = {{"Lt. Cmd. Data", "Lt. Worf"},{'"Aft shields are down to 40 %.\nCompensating."', '"Phasers locked on target,\nready on your command!"'}}
+dialogText = {{"Lt. Cmd. Data", "Lt. Worf", "Couns. Troi"},{'"Aft shields are down to 40 %.\nCompensating."', '"Phasers locked on target,\nready on your command!"', 'I am sensing strong emotions \nof great joy and satisfaction.'}}
 
 dialogState = 0
 dialogType = 0
@@ -35,7 +35,7 @@ end
 
 function drawDialog()
 	if (dialogState ~= 0) then
-		dialogq = love.graphics.newQuad(dialogType*32, 0, 32, 48, 64, 48)
+		dialogq = love.graphics.newQuad(dialogType*32, 0, 32, 48, 96, 48)
 		love.graphics.drawq(crew, dialogq, dialogX, dialogY, 0, 3, 3, 0,0)
 		love.graphics.print(dialogText[1][dialogType+1], dialogX+110, dialogY+70 )
 		love.graphics.print(dialogText[2][dialogType+1], dialogX+110, dialogY+90 )

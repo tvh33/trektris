@@ -152,7 +152,7 @@ function love.keypressed(key)
 		multiplier = 50.0
    elseif key == " " then
 		if dialogState == 0 then
-			openDialog((dialogType+1) % 2)
+			openDialog((dialogType+1) % 3)
 		else
 			closeDialog()
 		end
