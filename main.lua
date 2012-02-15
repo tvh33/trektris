@@ -1,5 +1,6 @@
 require "helper"
 require "tetromino"
+require "crew"
 
 function love.load()
 	math.randomseed(os.time())
@@ -17,15 +18,15 @@ function love.load()
     end
 	image = love.graphics.newImage( "sprites.png" )
 	image:setFilter("nearest", "nearest")
-	rowcount = 0
-	
-	rotation = 1
+	rowcount = 0	
 	state = 0
 	speed = 35
 	test = 0
 	multiplier = 1.5
 	head = Brik:new({shape = math.random(7), xpos = 128})
-	nextTet = Brik:new({shape = math.random(7), xpos = 400, ypos = 30, rotation = 1, probL = 80, probU= 99, prob = math.random(80, 99) })
+	nextTet = Brik:new({shape = math.random(7), xpos = 400, ypos = 30, rotation = 1, probL = 65, probU= 99, prob = math.random(65, 99) })
+	stdfont = love.graphics.newFont("visitor1.ttf", 14)
+	love.graphics.setFont(stdfont)
 end
 
 function love.update(dt)
@@ -42,6 +43,7 @@ function love.update(dt)
 		end
 		test = 0
 	end
+	updateDialog(dt)
 end
 
 function nextStepAllowed(dx, dy, rot)
@@ -60,9 +62,10 @@ end
 function love.draw()
 	drawBoard()
 	drawShape(head)
-	drawShape(nextTet, 2)
-	love.graphics.print(string.format("probability: %s%%", nextTet.prob), 420, 150)
-	love.graphics.print(string.format("rows: %s", rowcount), 420, 165)
+	drawShape(nextTet)
+	drawDialog()
+	love.graphics.print(string.format("probability: %s%%", nextTet.prob), 420, 200)
+	love.graphics.print(string.format("rows: %s", rowcount), 420, 215)
 end
 
 function drawShape(obj, s)
@@ -144,12 +147,15 @@ function love.keypressed(key)
 			head:incrX(32)
 		end
    elseif key == "up" then
-		newrotation = (head:getRotation() % 4) + 1
-		if nextStepAllowed(0,0,newrotation) == 0 then
-			head:setRotation(newrotation)
-		end
+		head:rotate(1)
    elseif key == "down" then
 		multiplier = 50.0
+   elseif key == " " then
+		if dialogState == 0 then
+			openDialog((dialogType+1) % 2)
+		else
+			closeDialog()
+		end
    end
 end
 

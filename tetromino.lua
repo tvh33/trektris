@@ -40,7 +40,10 @@ function Brik:setRotation(r)
 end
 
 function Brik:rotate(dr)
-	self.rotation = self.rotation + dr 
+	newrotation = (self.rotation % 4) + dr
+	if nextStepAllowed(0,0,newrotation) == 0 then
+		self.rotation = newrotation
+	end
 end
 
 function Brik:setShape(s)
