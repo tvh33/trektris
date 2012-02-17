@@ -1,4 +1,4 @@
-crew = love.graphics.newImage("characters.png")
+crew = love.graphics.newImage("res/sprites/characters.png")
 crew:setFilter("nearest", "nearest")
 
 dialogText = {{"Lt. Cmd. Data", "Lt. Worf", "Couns. Troi", "Lt. La Forge"},{'"Aft shields are down to 40 %.\nCompensating."', '"Phasers locked on target,\nready at your command!"', '"I am sensing strong emotions \nof great joy and satisfaction."', '"Dilithium crystals still intact. \nApproaching warp 8.6!"'}}

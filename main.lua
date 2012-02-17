@@ -16,7 +16,7 @@ function love.load()
 		end
 	end
     end
-	image = love.graphics.newImage( "sprites.png" )
+	image = love.graphics.newImage( "res/sprites/sprites.png" )
 	image:setFilter("nearest", "nearest")
 	rowcount = 0	
 	state = 0
@@ -25,7 +25,7 @@ function love.load()
 	multiplier = 1.5
 	head = Brik:new({shape = math.random(7), xpos = 128})
 	nextTet = Brik:new({shape = math.random(7), xpos = 400, ypos = 30, rotation = 1, probL = 65, probU= 99, prob = math.random(65, 99) })
-	stdfont = love.graphics.newFont("visitor1.ttf", 14)
+	stdfont = love.graphics.newFont("res/fonts/visitor1.ttf", 14)
 	love.graphics.setFont(stdfont)
 end
 
