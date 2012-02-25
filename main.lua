@@ -16,7 +16,7 @@ function love.load()
 		end
 	end
     end
-	image = love.graphics.newImage( "res/sprites/sprites.png" )
+	image = love.graphics.newImage( "res/sprites/sprites2.png" )
 	image:setFilter("nearest", "nearest")
 	rowcount = 0	
 	state = 0
@@ -74,7 +74,7 @@ function drawShape(obj, s)
 	for i=0,4 do
 		for j=0,4 do
 			if helper[obj:getShape()][obj:getRotation()][i+1][j+1] ~= 0  then
-				colorq = love.graphics.newQuad((obj:getShape()-1)*8, 0, 8, 8, 56, 8)
+				colorq = love.graphics.newQuad((obj:getShape()-1)*8, 0, 8, 8, 64, 8)
 				love.graphics.drawq(image, colorq, obj:getX()+(dim*j), obj:getY()+(dim*i)+32,0,scale,scale,0,0)
 			end
 		end
@@ -86,7 +86,7 @@ function drawBoard()
 	for i=0,17 do
 		for j=0,11 do
 			if board[i][j] ~= 8 and board[i][j] ~= 0 then
-				colorq = love.graphics.newQuad((board[i][j]-1)*8, 0, 8, 8, 56, 8)
+				colorq = love.graphics.newQuad((board[i][j]-1)*8, 0, 8, 8, 64, 8)
 				love.graphics.drawq(image, colorq, (j*32), (i*32)+32,0,4,4,0,0)
 			end
 		end
