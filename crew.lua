@@ -9,6 +9,7 @@ dialogX = 390
 dialogHiddenY = 610
 dialogTargetY = 430
 dialogY = dialogHiddenY
+dialogCounter = 0
 
 function openDialog(t)
 	dialogType = t
@@ -17,6 +18,11 @@ end
 
 function updateDialog(dt)
 	if dialogState ~= 0 then
+		if dialogCounter < 5 then
+			dialogCounter = dialogCounter + dt
+		else
+			closeDialog()
+		end
 		if dialogState == 1 then
 			if dialogY > dialogTargetY then
 				if dialogTargetY > (dialogY - 1500*dt) then
@@ -48,5 +54,6 @@ function drawDialog()
 end
 
 function closeDialog()
+	dialogCounter = 0
 	dialogState = 3
 end

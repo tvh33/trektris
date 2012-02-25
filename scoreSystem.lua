@@ -1,6 +1,8 @@
 score = 0
 combo = 0
 
+--Tilføj noget der tager højde for # rækker fjernet inden for tidsinterval
+
 function calculateScore(n)
 	if n == 0 then
 		combo = 0
@@ -18,6 +20,7 @@ function calculateScore(n)
 			tmpScore = 100
 		elseif n == 4 then
 			tmpScore = 200
+			openDialog(2) --test, open Troi
 		end
 		tmpScore = tmpScore + (combo-1) * 10
 		score = score + tmpScore
