@@ -1,0 +1,63 @@
+::Moving stars in background:
+	Idle while on impulse power
+	Moving once warp speed.
+	Speed and streaks increasing in intervals as warp grows
+
+
+::Levels:
+Impulse power:
+	[0,1,2,3]
+Warp speed:
+	[1,2,3,4,5,6,7,8,9,9.5,9.7,9.9,9.9999999999999]
+	last level: nearing warp asymptote
+
+::Scoring system:
+	Combo (message from Troi/Geordi):
+		rows cleared more than three times in a row
+	2 tetris in a row
+	3 tetris in a row
+	x rows in less than 20 seconds
+	
+	
+
+::Ship systems:
+Powering different systems:
+	Shields/weapon: balancing power
+	Warp: separate power
+	
+	Power:
+		Power decreases by some variable changing every level
+		Ability to change strategy (offensive/defensive):
+			transfer power from weapons to shields (message from Data)
+			transfer power from shields to weapons (message from worf)
+		Warp core is loaded when rows are cleared
+		
+		Tetris adds additional power to shield/weapon bank
+		
+Shield system:
+	Value: 0-100%
+	Stages: up/holding (messages from Data)
+			down/failing/disrupted/penetrated (messages from Data)
+			Consequences:
+				Probability: 10-50
+				Able to take hits: random holes in board (messages from Data)
+				Weird shaped tetrominos	
+			Time to normal: 
+				40 sec (-8 sec for each row during downtime)
+				
+
+Weapon system:
+	Value: 0-100%
+	Phasers
+		Clear rows from bottom
+	Photon torpedoes
+		Blow top rows to parts
+		
+
+Warp system:
+	Value: 0-100%
+	When nearing threshold:
+		> 90% (messages from Geordi - telling how many rows needed)
+	Threshold reached:
+		>= 100% (message from Geordi)
+		next 'level', increase (warp)speed.
