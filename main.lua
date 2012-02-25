@@ -1,15 +1,17 @@
 require "helper"
 require "tetromino"
 require "crew"
+require "scoreSystem"
 
 function love.load()
 	math.randomseed(os.time())
 	frames = 0
 	board = {}
-	for i=0,17 do
+	boardHeight = 21
+	for i=0,boardHeight do
 		board[i] = {}
 		for j=0,11 do
-		if j == 0 or j == 11 or i == 17 then
+		if j == 0 or j == 11 or i == boardHeight then
 			board[i][j] = 8
 		else
 			board[i][j] = 0
@@ -27,6 +29,8 @@ function love.load()
 	nextTet = Brik:new({shape = math.random(7), xpos = 400, ypos = 30, rotation = 1, probL = 65, probU= 99, prob = math.random(65, 99) })
 	stdfont = love.graphics.newFont("res/fonts/visitor1.ttf", 14)
 	love.graphics.setFont(stdfont)
+	
+	yoffset = (boardHeight-17)*-32
 end
 
 function love.update(dt)
@@ -66,28 +70,27 @@ function love.draw()
 	drawDialog()
 	love.graphics.print(string.format("probability: %s%%", nextTet.prob), 420, 200)
 	love.graphics.print(string.format("rows: %s", rowcount), 420, 215)
+	love.graphics.print(string.format("Score: %s", score), 420, 230)
 end
 
-function drawShape(obj, s)
-	scale = s or 4
-	dim = 8*scale
+function drawShape(obj)
 	for i=0,4 do
 		for j=0,4 do
 			if helper[obj:getShape()][obj:getRotation()][i+1][j+1] ~= 0  then
 				colorq = love.graphics.newQuad((obj:getShape()-1)*8, 0, 8, 8, 64, 8)
-				love.graphics.drawq(image, colorq, obj:getX()+(dim*j), obj:getY()+(dim*i)+32,0,scale,scale,0,0)
+				love.graphics.drawq(image, colorq, obj:getX()+(32*j), obj:getY()+(32*i)+32+yoffset,0,4,4,0,0)
 			end
 		end
 	end
 end
 
 function drawBoard()
-	love.graphics.rectangle("line", 32, 32, 320, 544)
-	for i=0,17 do
+	love.graphics.rectangle("line", 32, 0, 320, 576)
+	for i=0,boardHeight do
 		for j=0,11 do
 			if board[i][j] ~= 8 and board[i][j] ~= 0 then
 				colorq = love.graphics.newQuad((board[i][j]-1)*8, 0, 8, 8, 64, 8)
-				love.graphics.drawq(image, colorq, (j*32), (i*32)+32,0,4,4,0,0)
+				love.graphics.drawq(image, colorq, (j*32), (i*32)+32+yoffset,0,4,4,0,0)
 			end
 		end
 	end
@@ -98,8 +101,11 @@ function lockShape()
 	yy = head:getY()/32
 	for i=0,4 do
 		for j=0,4 do
-			if helper[head:getShape()][head:getRotation()][i+1][j+1] ~= 0 and i+yy <18 and j+xx > 0 and j+xx < 12  then
+			if helper[head:getShape()][head:getRotation()][i+1][j+1] ~= 0 and i+yy <boardHeight+1 and j+xx > 0 and j+xx < 12  then
 				board[i+yy][j+xx] = head:getShape()
+				if i+yy <= 2 then
+					os.exit()
+				end
 			end
 		end
 	end
@@ -118,7 +124,8 @@ function lockShape()
 end
 
 function removeRows()
-	for i=0,16 do
+	local rows = 0
+	for i=0,boardHeight-1 do
 		tmp = 0
 		for j=1,10 do
 			if board[i][j] == 0 then
@@ -132,9 +139,11 @@ function removeRows()
 					board[p][q] = board[p-1][q]
 				end
 			end
-			rowcount = rowcount + 1
+			rows = rows + 1
 		end
 	end
+	calculateScore(rows)
+	rowcount = rowcount + rows
 end
 
 function love.keypressed(key)
