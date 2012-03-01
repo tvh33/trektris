@@ -1,9 +1,12 @@
 score = 0
 combo = 0
+rowCount = 0
 
 --Tilføj noget der tager højde for # rækker fjernet inden for tidsinterval
 
 function calculateScore(n)
+	shieldPower = shieldPower + n*8
+	rowCount = rowCount + n
 	if n == 0 then
 		combo = 0
 	else
@@ -25,4 +28,9 @@ function calculateScore(n)
 		tmpScore = tmpScore + (combo-1) * 10
 		score = score + tmpScore
 	end
+end
+
+function drawScore()
+	love.graphics.print(string.format("Rows: %s", rowCount), 420, 215)
+	love.graphics.print(string.format("Credit: %s", score), 420, 230)
 end
